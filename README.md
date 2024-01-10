@@ -1,5 +1,8 @@
 # PART 1:
-consists of part1.py, run_gmx2016.sh and trjcat.py
+consists of:
+- part1.py
+- run_gmx2016.sh
+- trjcat.py
 
 all for single precision use
 
@@ -29,6 +32,7 @@ new .xtc-file.
 
 ## trjcat.py
 Converts the modified .gro-files to a new .xtc-file.
+
 
 # Tested in:
 tcb:/data/user1/HiWi_Maike/tool/test_5A_k5000_41/231213
