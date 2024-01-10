@@ -28,10 +28,10 @@ Recommended input for the trjconv command:
 cluster: 1 (Protein), center: 23 (QM-Zone), output: 0 (System)
 
 ## run_gmx2016.sh
+run with 'source ./run_gmx2016.sh'
+
 File to source the right GROMACS version to convert the modified .gro-files to a
 new .xtc-file.
-
-## trjcat.py
 Converts the modified .gro-files to a new .xtc-file.
 
 
