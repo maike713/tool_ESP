@@ -10,8 +10,9 @@ all for single precision use
 Reads an .xtc-file, writes all the .gro-files and puts Link Atoms in the right
 position.
 
-input for 41-/43-systems: python3 part1.py 347 349 1683 1685 2139 2141 3251 22 2 27
-input for 71-/73-systems: python3 part1.py 347 349 2104 2106 3235 3237 3251 22 27 2
+input:
+- for 41-/43-systems: python3 part1.py 347 349 1683 1685 2139 2141 3251 22 2 27
+- for 71-/73-systems: python3 part1.py 347 349 2104 2106 3235 3237 3251 22 27 2
 
 input numbers stand for: C-alpha 1, C-beta 1, C-alpha 2, C-beta 2, C-alpha 3
 C-beta 3, first solvent atom, group numbers of the relevant residues
