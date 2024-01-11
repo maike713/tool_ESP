@@ -12,7 +12,7 @@ position.
 files needed:
 - .xtc-file
 - .tpr-file
-- .ndx-file with QM_region (debatable)
+- .ndx-file with QM_region and without Link Atoms (debatable)
 
 input:
 - for 41-/43-systems: python3 part1.py 347 349 1683 1685 2139 2141 3251 22 2 27
@@ -22,8 +22,12 @@ input numbers stand for: C-alpha 1, C-beta 1, C-alpha 2, C-beta 2, C-alpha 3
 C-beta 3, first solvent atom, group numbers of the relevant residues
 
 The frames are saved as .gro-files in subdirectory 'frames'.
+The new frames with the added Link Atoms are in the subdirectory 'new_frames'.
 This script should be in the parent directory of 'frames'.
 The location of the input-files is arbitrary.
+
+Output:
+- full.gro
 
 Recommended input for the trjconv command (QM-Zone debatable):
 cluster: 1 (Protein), center: 23 (QM-Zone), output: 0 (System)
@@ -35,6 +39,8 @@ File to source the right GROMACS version to convert the modified .gro-files to a
 new .xtc-file.
 Converts the modified .gro-files to a new .xtc-file.
 
+Output:
+- full.xtc
 
 # PART 2
 consists of:

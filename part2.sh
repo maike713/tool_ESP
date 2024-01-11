@@ -32,4 +32,4 @@ if ! $make_tpr; then
 	exit 1
 fi
 
-echo "md.tpr successfully generated"
+echo "Successfully generated md.tpr"

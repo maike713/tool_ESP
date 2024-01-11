@@ -40,6 +40,12 @@ try:
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 
+# make a directory 'new_frames' to store the new files
+try:
+    subprocess.run('mkdir new_frames', shell = True, check = True)
+except subprocess.CalledProcessError as e:
+    print(f'Error executing command: {e}')
+
 # execute the command in the frames subdirectory
 # one directory back because the command is executed in a subdirectory
 command = f'gmx trjconv -f ../{xtc} -s ../{tpr} -n ../{ndx} -sep -center -pbc cluster -o frame.gro'
@@ -78,7 +84,6 @@ def coord(num_line):
 # loop through all files in directory 'frames'
 for file_name in file_list:
     input_file_path = os.path.join('frames', file_name)
-    output_file_path = os.path.join('.', f'new_{file_name}')
 
     with open(input_file_path, 'r') as file:
         # read all the lines in list 'lines'
@@ -124,9 +129,11 @@ for file_name in file_list:
     if dist_la1_la2 > p or dist_la1_la3 > p or dist_la2_la3 > p:
         print('BROKEN MOLECULE')
         with open('ERROR.txt', 'a') as error_file:
-            error_file.write(f'\nERROR broken molecule file {file_name}\n')
+            error_file.write(f'\nERROR probably broken molecule file {file_name}\n')
             error_file.write(f'{dist_la1_la2}, {dist_la1_la3}, {dist_la2_la3}\n')
 
+
+    output_file_path = os.path.join('new_frames', f'new_{file_name}')
 
     # write a new file
     with open(output_file_path, 'w') as new_file:
@@ -153,8 +160,8 @@ for file_name in file_list:
 ## generate the new xtc-file
 
 # get a list of files with ending .gro and sort them
-file_pattern = 'new_frame*.gro'
-file_list = sorted(glob.glob(file_pattern), key = lambda x: int(x.split('frame')[1].split('.gro')[0]))
+file_pattern = os.path.join('new_frames', 'new_frame*.gro')
+file_list = sorted(glob.glob(file_pattern), key = lambda x: int(os.path.basename(x).split('frame')[1].split('.gro')[0]))
 print(file_list)
 
 # loop through all gro-files in current directory
