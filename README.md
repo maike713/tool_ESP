@@ -32,6 +32,21 @@ Output:
 Recommended input for the trjconv command (QM-Zone debatable):
 cluster: 1 (Protein), center: 23 (QM-Zone), output: 0 (System)
 
+## part1_mod.py
+This script can be used if the frames from the original .xtc-file were successfully
+generated but something's wrong with adding the Link Atoms.
+
+This script uses the frames and adds the Link Atoms.
+
+It's for example useful if the centering didn't work with one frame. Then
+part1.py generates a trajectory until this frame. The frames after the broken
+one can be copied to a new directory as well as this script. It can then
+generate the trajectory from the frame after the broken one.
+
+Another use is for testing with QM/MM simulations. Generate frames from the
+.xtc-file with part1.py, delete the Link Atoms with "sed -i '/XXX/d' frame*.gro"
+and generate with part1_mod.py the new_frame*.gro files.
+
 ## run_gmx2016.sh
 run with 'source ./run_gmx2016.sh'
 
