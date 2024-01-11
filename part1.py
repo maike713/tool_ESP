@@ -104,13 +104,13 @@ for file_name in file_list:
 
         # calculate the vectors to the link atoms and round to three decimals
         vec_la1 = np.round(0.72 * (vec_ca1 - vec_cb1) + vec_cb1, decimals = 3)
-        vec_la1 = ['{:.3f}'.format(num) for num in vec_la1]     # add zeroes if necessary
+        vec_la1 = ['{:>8.3f}'.format(num) for num in vec_la1]     # add zeroes if necessary
         print(vec_la1)  ## control
         vec_la2 = np.round(0.72 * (vec_ca2 - vec_cb2) + vec_cb2, decimals = 3)
-        vec_la2 = ['{:.3f}'.format(num) for num in vec_la2]     # add zeroes if necessary
+        vec_la2 = ['{:>8.3f}'.format(num) for num in vec_la2]     # add zeroes if necessary
         print(vec_la2)  ## control
         vec_la3 = np.round(0.72 * (vec_ca3 - vec_cb3) + vec_cb3, decimals = 3)
-        vec_la3 = ['{:.3f}'.format(num) for num in vec_la3]     # add zeroes if necessary
+        vec_la3 = ['{:>8.3f}'.format(num) for num in vec_la3]     # add zeroes if necessary
         print(vec_la3)  ## control
 
     # control mechanism: should detect broken QM-zone
@@ -148,9 +148,9 @@ for file_name in file_list:
             new_file.write(lines[i])
 
         # write the Link Atoms
-        new_file.write(f'{group_1}XXX     LA {sol - 1}   {vec_la1[0]}   {vec_la1[1]}   {vec_la1[2]}\n')
-        new_file.write(f'{group_2}XXX     LA {sol}   {vec_la2[0]}   {vec_la2[1]}   {vec_la2[2]}\n')
-        new_file.write(f'{group_3}XXX     LA {sol + 1}   {vec_la3[0]}   {vec_la3[1]}   {vec_la3[2]}\n')
+        new_file.write(f'{group_1}XXX     LA {sol - 1}{vec_la1[0]}{vec_la1[1]}{vec_la1[2]}\n')
+        new_file.write(f'{group_2}XXX     LA {sol}{vec_la2[0]}{vec_la2[1]}{vec_la2[2]}\n')
+        new_file.write(f'{group_3}XXX     LA {sol + 1}{vec_la3[0]}{vec_la3[1]}{vec_la3[2]}\n')
 
         # write the SOL atoms
         for i in range(sol, len(lines)):
