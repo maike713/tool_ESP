@@ -48,10 +48,14 @@ except subprocess.CalledProcessError as e:
 
 # execute the command in the frames subdirectory
 # one directory back because the command is executed in a subdirectory
-command = f'gmx trjconv -f ../{xtc} -s ../{tpr} -n ../{ndx} -sep -center -pbc cluster -o frame.gro'
-
+ommand1 = f'gmx trjconv -f {xtc} -s {tpr} -n {ndx} -pbc whole -o whole.xtc'
+command2 = f'gmx trjconv -f ../whole.xtc -s ../{tpr} -n ../{ndx} -pbc mol -sep -o frame.gro'
 try:
-    subprocess.run(command, shell = True, check = True, cwd = './frames')
+    subprocess.run(command1, shell = True, check = True, cwd = '.')
+except subprocess.CalledProcessError as e:
+    print(f'Error executing command: {e}')
+try:
+    subprocess.run(command2, shell = True, check = True, cwd = './frames')
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 
@@ -116,21 +120,25 @@ for file_name in file_list:
     # control mechanism: should detect broken QM-zone
 
     # create 2D-arrays that sklearn can work with
-    vec_la1_2d = np.array(vec_la1, dtype = float).reshape(1,-1)
-    vec_la2_2d = np.array(vec_la2, dtype = float).reshape(1,-1)
-    vec_la3_2d = np.array(vec_la3, dtype = float).reshape(1,-1)
+    vec_ca1_2d = np.array(vec_ca1, dtype = float).reshape(1,-1)
+    vec_ca2_2d = np.array(vec_ca2, dtype = float).reshape(1,-1)
+    vec_ca3_2d = np.array(vec_ca3, dtype = float).reshape(1,-1)
 
-    # calculate the distances between the LAs
-    dist_la1_la2 = euclidean_distances(vec_la1_2d, vec_la2_2d)
-    dist_la1_la3 = euclidean_distances(vec_la1_2d, vec_la3_2d)
-    dist_la2_la3 = euclidean_distances(vec_la2_2d, vec_la3_2d)
-    print(dist_la1_la2, dist_la1_la3, dist_la2_la3)     ## control
+    vec_cb1_2d = np.array(vec_cb1, dtype = float).reshape(1,-1)
+    vec_cb2_2d = np.array(vec_cb2, dtype = float).reshape(1,-1)
+    vec_cb3_2d = np.array(vec_cb3, dtype = float).reshape(1,-1)
 
-    if dist_la1_la2 > p or dist_la1_la3 > p or dist_la2_la3 > p:
+    # calculate the distances between Calpha and Cbeta
+    dist_ca1_cb1 = euclidean_distances(vec_ca1_2d, vec_cb1_2d)
+    dist_ca2_cb2 = euclidean_distances(vec_ca2_2d, vec_cb2_2d)
+    dist_ca3_cb3 = euclidean_distances(vec_ca3_2d, vec_cb3_2d)
+    print(dist_ca1_cb1, dist_ca2_cb2, dist_ca3_cb3)     ## control
+
+    if dist_ca1_cb1 > p or dist_ca2_cb2 > p or dist_ca3_cb3 > p:
         print('BROKEN MOLECULE')
         with open('ERROR.txt', 'a') as error_file:
             error_file.write(f'\nERROR probably broken molecule file {file_name}\n')
-            error_file.write(f'{dist_la1_la2}, {dist_la1_la3}, {dist_la2_la3}\n')
+            error_file.write(f'{dist_ca1_cb1}, {dist_ca2_cb2}, {dist_ca3_cb3}\n')
 
 
     output_file_path = os.path.join('new_frames', f'new_{file_name}')

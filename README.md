@@ -45,7 +45,9 @@ generate the trajectory from the frame after the broken one.
 
 Another use is for testing with QM/MM simulations. Generate frames from the
 .xtc-file with part1.py, delete the Link Atoms with "sed -i '/XXX/d' frame*.gro"
-and generate with part1_mod.py the new_frame*.gro files.
+and generate with part1_mod.py the new_frame*.gro files. ATTENTION: for this
+case, the checksum at the beginning of the new_frame.gro-files needs to be three
+atoms lower.
 
 ## run_gmx2016.sh
 run with 'source ./run_gmx2016.sh'
@@ -63,6 +65,9 @@ consists of:
 
 ## part2.sh
 Generates a .tpr-file for the QM rerun
+
+ATTENTION: generate .ndx-file with new_frame0.gro and add the QM region.
+Otherwise there will be 3 atoms missing in the .ndx-file.
 
 files needed:
 - .top-file -> changed for QM simulations
