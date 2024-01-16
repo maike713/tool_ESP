@@ -3,7 +3,7 @@
 
 # files needed:
 # .top -> changed for qm simulations
-# .ndx -> changed for qm qimulations
+# .ndx -> newly generated and changed for qm qimulations
 # new_frame0.gro
 # full.xtc
 # dftb_in.hsd

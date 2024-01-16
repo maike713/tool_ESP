@@ -50,10 +50,8 @@ file_list = os.listdir('frames')
 # function to get the coordinates as a vector
 ## global variable 'lines' in function -> meh
 def coord(num_line):
-    print(lines[num_line]) ## control
     lines_string = str(lines[num_line])
     vec = np.array([float(lines_string.split()[3]),float(lines_string.split()[4]), float(lines_string.split()[5])])
-    print(vec)      ## control
     return vec
 
 # loop through all files in directory 'frames'
@@ -63,11 +61,9 @@ for file_name in file_list:
     with open(input_file_path, 'r') as file:
         # read all the lines in list 'lines'
         lines = file.readlines()
-        print(lines[1]) ##  control
 
         # add three atoms to the total number of atoms
         total_atoms = int(lines[1]) + 3
-        print(total_atoms) ## control
 
         # get the coordinates of Ca and Cb atoms
         vec_ca1 = coord(a1)
@@ -80,13 +76,10 @@ for file_name in file_list:
         # calculate the vectors to the link atoms and round to three decimals
         vec_la1 = np.round(0.72 * (vec_ca1 - vec_cb1) + vec_cb1, decimals = 3)
         vec_la1 = ['{:>8.3f}'.format(num) for num in vec_la1]     # add zeroes if necessary
-        print(vec_la1)  ## control
         vec_la2 = np.round(0.72 * (vec_ca2 - vec_cb2) + vec_cb2, decimals = 3)
         vec_la2 = ['{:>8.3f}'.format(num) for num in vec_la2]     # add zeroes if necessary
-        print(vec_la2)  ## control
         vec_la3 = np.round(0.72 * (vec_ca3 - vec_cb3) + vec_cb3, decimals = 3)
         vec_la3 = ['{:>8.3f}'.format(num) for num in vec_la3]     # add zeroes if necessary
-        print(vec_la3)  ## control
 
     # control mechanism: should detect broken QM-zone
 
@@ -99,7 +92,6 @@ for file_name in file_list:
     dist_la1_la2 = euclidean_distances(vec_la1_2d, vec_la2_2d)
     dist_la1_la3 = euclidean_distances(vec_la1_2d, vec_la3_2d)
     dist_la2_la3 = euclidean_distances(vec_la2_2d, vec_la3_2d)
-    print(dist_la1_la2, dist_la1_la3, dist_la2_la3)     ## control
 
     if dist_la1_la2 > p or dist_la1_la3 > p or dist_la2_la3 > p:
         print('BROKEN MOLECULE')

@@ -15,7 +15,7 @@
 # the input files (xtc, tpr, ndx) can be anywhere
 
 ## input for the trjconv command:
-# cluster: 1 (Protein), center: 23 (QM-Zone), output: 0 (System)
+# output: 0 (System)
 
 ####################
 
@@ -46,9 +46,9 @@ try:
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 
+command1 = f'gmx trjconv -f {xtc} -s {tpr} -n {ndx} -pbc whole -o whole.xtc'
 # execute the command in the frames subdirectory
 # one directory back because the command is executed in a subdirectory
-ommand1 = f'gmx trjconv -f {xtc} -s {tpr} -n {ndx} -pbc whole -o whole.xtc'
 command2 = f'gmx trjconv -f ../whole.xtc -s ../{tpr} -n ../{ndx} -pbc mol -sep -o frame.gro'
 try:
     subprocess.run(command1, shell = True, check = True, cwd = '.')
@@ -79,10 +79,8 @@ file_list = os.listdir('frames')
 # function to get the coordinates as a vector
 ## global variable 'lines' in function -> meh
 def coord(num_line):
-    print(lines[num_line]) ## control
     lines_string = str(lines[num_line])
     vec = np.array([float(lines_string.split()[3]),float(lines_string.split()[4]), float(lines_string.split()[5])])
-    print(vec)      ## control
     return vec
 
 # loop through all files in directory 'frames'
@@ -92,11 +90,9 @@ for file_name in file_list:
     with open(input_file_path, 'r') as file:
         # read all the lines in list 'lines'
         lines = file.readlines()
-        print(lines[1]) ##  control
 
         # add three atoms to the total number of atoms
         total_atoms = int(lines[1]) + 3
-        print(total_atoms) ## control
 
         # get the coordinates of Ca and Cb atoms
         vec_ca1 = coord(a1)
@@ -109,13 +105,10 @@ for file_name in file_list:
         # calculate the vectors to the link atoms and round to three decimals
         vec_la1 = np.round(0.72 * (vec_ca1 - vec_cb1) + vec_cb1, decimals = 3)
         vec_la1 = ['{:>8.3f}'.format(num) for num in vec_la1]     # add zeroes if necessary
-        print(vec_la1)  ## control
         vec_la2 = np.round(0.72 * (vec_ca2 - vec_cb2) + vec_cb2, decimals = 3)
         vec_la2 = ['{:>8.3f}'.format(num) for num in vec_la2]     # add zeroes if necessary
-        print(vec_la2)  ## control
         vec_la3 = np.round(0.72 * (vec_ca3 - vec_cb3) + vec_cb3, decimals = 3)
         vec_la3 = ['{:>8.3f}'.format(num) for num in vec_la3]     # add zeroes if necessary
-        print(vec_la3)  ## control
 
     # control mechanism: should detect broken QM-zone
 
@@ -132,7 +125,6 @@ for file_name in file_list:
     dist_ca1_cb1 = euclidean_distances(vec_ca1_2d, vec_cb1_2d)
     dist_ca2_cb2 = euclidean_distances(vec_ca2_2d, vec_cb2_2d)
     dist_ca3_cb3 = euclidean_distances(vec_ca3_2d, vec_cb3_2d)
-    print(dist_ca1_cb1, dist_ca2_cb2, dist_ca3_cb3)     ## control
 
     if dist_ca1_cb1 > p or dist_ca2_cb2 > p or dist_ca3_cb3 > p:
         print('BROKEN MOLECULE')

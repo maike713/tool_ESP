@@ -29,8 +29,8 @@ The location of the input-files is arbitrary.
 Output:
 - full.gro
 
-Recommended input for the trjconv command (QM-Zone debatable):
-cluster: 1 (Protein), center: 23 (QM-Zone), output: 0 (System)
+Recommended input for the trjconv command:
+output: 0 (System)
 
 ## part1_mod.py
 This script can be used if the frames from the original .xtc-file were successfully
@@ -47,7 +47,7 @@ Another use is for testing with QM/MM simulations. Generate frames from the
 .xtc-file with part1.py, delete the Link Atoms with "sed -i '/XXX/d' frame*.gro"
 and generate with part1_mod.py the new_frame*.gro files. ATTENTION: for this
 case, the checksum at the beginning of the new_frame.gro-files needs to be three
-atoms lower.
+atoms lower ("sed -i 's/149890/149887/g' full.gro").
 
 ## run_gmx2016.sh
 run with 'source ./run_gmx2016.sh'
