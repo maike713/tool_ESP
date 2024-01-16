@@ -21,6 +21,10 @@ input:
 input numbers stand for: C-alpha 1, C-beta 1, C-alpha 2, C-beta 2, C-alpha 3
 C-beta 3, first solvent atom, group numbers of the relevant residues
 
+ATTENTION: the input numbers are the LINE NUMBERS and not the atom numbers!!
+As python starts counting at 0, a line number of 348 results in an input number
+of 347
+
 The frames are saved as .gro-files in subdirectory 'frames'.
 The new frames with the added Link Atoms are in the subdirectory 'new_frames'.
 This script should be in the parent directory of 'frames'.
