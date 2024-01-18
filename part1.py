@@ -8,11 +8,10 @@
 ###### FILES NEEDED:
 # .xtc-file
 # .tpr-file
-# .ndx-file
 
 ## frames are saved as .gro-files in subdirectory 'frames'
 # this script should be in the parent directory of 'frames'
-# the input files (xtc, tpr, ndx) can be anywhere
+# the input files (xtc, tpr) can be anywhere
 
 ## input for the trjconv command:
 # output: 0 (System)
@@ -32,7 +31,6 @@ p = 1.0
 # input
 xtc = str(input('Enter the name of the .xtc-file:\n'))
 tpr = str(input('Enter the name of the .tpr-file:\n'))
-ndx = str(input('Enter the name of the .ndx-file:\n'))
 
 # make a directory to store the frames
 try:
@@ -46,10 +44,10 @@ try:
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 
-command1 = f'gmx trjconv -f {xtc} -s {tpr} -n {ndx} -pbc whole -o whole.xtc'
+command1 = f'gmx trjconv -f {xtc} -s {tpr} -pbc whole -o whole.xtc'
 # execute the command in the frames subdirectory
 # one directory back because the command is executed in a subdirectory
-command2 = f'gmx trjconv -f ../whole.xtc -s ../{tpr} -n ../{ndx} -pbc mol -sep -o frame.gro'
+command2 = f'gmx trjconv -f ../whole.xtc -s ../{tpr} -pbc mol -sep -o frame.gro'
 try:
     subprocess.run(command1, shell = True, check = True, cwd = '.')
 except subprocess.CalledProcessError as e:
@@ -72,7 +70,6 @@ group_1 = '{:>5}'.format(sys.argv[8])
 group_2 = '{:>5}'.format(sys.argv[9])
 group_3 = '{:>5}'.format(sys.argv[10])
 
-print(type(group_1))
 
 file_list = os.listdir('frames')
 
