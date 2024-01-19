@@ -66,6 +66,7 @@ Output:
 # PART 2
 consists of:
 - part2.sh
+- part2_esp.py
 
 ## part2.sh
 Generates a .tpr-file for the QM rerun
@@ -89,6 +90,22 @@ After the successfull generation of md.tpr: submit with:
 
 qsub single_submit.sh
 
+
+## part2_esp.py
+Calculates the ESP from the QM on itself. Reads the input file
+'qm_dftb_qm.qxyz' and writes the ESPs to the output file 'esp_output'.
+
+TO DO:
+- ESP for first step calculated, need ESPs for other steps
+- Ask for the atoms in the QM zone or get them with the input file
+- change delimiter in output file from ',' to ' '
+
+ATTENTTION:
+part2_esp1.py: weird values for ESP, to high? Discarded because of problems with
+writing to output file
+
+part2_esp2.py: way smaller values for ESP, used because of nice writing to
+output file
 
 # Tested in:
 tcb:/data/user1/HiWi_Maike/tool/test_5A_k5000_41/231213
