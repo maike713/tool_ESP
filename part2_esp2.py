@@ -62,8 +62,9 @@ for start in range(start_range, end_range, step):
 
     esp_values = []
     for atom in list(atom_coordinates)[start:end]:
-        distances = sum(np.linalg.norm(atom_coordinates[atom] - atom_coordinates[other_atom]) for other_atom in atom_coordinates if other_atom != atom)
-        sum_charges = sum(charge for other_atom, charge in atom_charges.items() if other_atom != atom)
+        distances = sum(np.linalg.norm(atom_coordinates[atom] - atom_coordinates[other_atom]) for other_atom in list(atom_coordinates)[start:end] if other_atom != atom)
+        sum_charges = sum(charge for other_atom, charge in list(atom_charges.items())[start:end] if other_atom != atom)
+        print(distances, sum_charges, '\n')
         esp_values.append(sum_charges / distances)
 
     with open('esp_output2', 'a') as file:
