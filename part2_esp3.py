@@ -40,6 +40,8 @@ def read_coords_charges(file_path, frames, empty_lines):
     # create empty dictionary 
     dict_frames = {}
     #print(frame_value[:,0])
+    # create dictionary to convert atom labels to numbers
+    dict_atomtypes = {'c':1, 'h':2, 's':3}
 
     with open(file_path, 'r') as file:
         # read all lines as strings into list 'all_lines'
@@ -52,24 +54,21 @@ def read_coords_charges(file_path, frames, empty_lines):
         for i in range(0, len(frames)):
             # generate keys for dict_frames
             frame_label = i
-            #print(frame_label)
+            print(frame_label)
 
             # generate values for dict_frames in the form of:
                 # [[x(atom1), y(atom1), z(atom1), q(atom1)]
                 #  [x(atom2), y(atom2), z(atom2), q(atom2)]
                 # ...
                 #  [x(atom(i)), y(atom(i)), z(atom(i)), q(atom(i))]]
-            frame_value = np.empty((atom_count, 4))
+            frame_value = np.empty((atom_count, 5))
             for j in range(0, atom_count):
                 # split the string with index frames[i] + j in all_lines
                 to_append = np.array([ all_lines[int(frames[i]) + j].split() ])
-                to_append = to_append[:,1:]
-                #print(to_append)
+                k = to_append[:,0]
+                print(k)
+                to_append[:,0] = dict_atomtypes[k[0]]
                 frame_value[j,:] = to_append
-                #print(frame_value)
-
-                ## TO DO: also save the atom type (convert c to 1, h to 2 etc, as first number in to_append)
-                # with dctionary
 
             dict_frames[i] = frame_value
 
