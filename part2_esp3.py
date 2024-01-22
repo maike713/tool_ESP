@@ -54,7 +54,7 @@ def read_coords_charges(file_path, frames, empty_lines):
         for i in range(0, len(frames)):
             # generate keys for dict_frames
             frame_label = i
-            print(frame_label)
+            #print(frame_label)
 
             # generate values for dict_frames in the form of:
                 # [[x(atom1), y(atom1), z(atom1), q(atom1)]
@@ -66,7 +66,7 @@ def read_coords_charges(file_path, frames, empty_lines):
                 # split the string with index frames[i] + j in all_lines
                 to_append = np.array([ all_lines[int(frames[i]) + j].split() ])
                 k = to_append[:,0]
-                print(k)
+                #print(k)
                 to_append[:,0] = dict_atomtypes[k[0]]
                 frame_value[j,:] = to_append
 
@@ -75,11 +75,57 @@ def read_coords_charges(file_path, frames, empty_lines):
     return dict_frames
 
 frames, empty_lines, atom_count = find_frames(file_path)
-print(frames)
-print(empty_lines)
-print(atom_count)
+#print(frames)
+#print(empty_lines)
+#print(atom_count)
 
 dict_frames = read_coords_charges(file_path, frames, empty_lines)
-print('\nDictionary:')
+#empty dictionary to store ESPs per frame
+dict_esp = {}
+
+#print('\nDictionary:')
+
+# loop through the frames
 for key in dict_frames:
-    print(key, dict_frames[key], '\n')
+    #print(key, dict_frames[key], '\n')
+    # empty list to store coordinates of a frame
+    coords = []
+    # empty list to store quotient = distance / charge of a frame
+    quotient = []
+    # empty list to store ESPs of a frame
+    esp_values = []
+
+    # loop through the atoms in a frame
+    for i in range(0, atom_count):
+        # save coordinates of atoms in variable coord_vector if atoms != atom i
+        coord_vector_i = dict_frames[key]
+        coord_vector_i = np.array([ coord_vector_i[i,1], coord_vector_i[i,2], coord_vector_i[i,3] ])
+        coords.append(coord_vector_i)
+
+    # calculate the distance and charge between atom i and all other atoms
+    for i in range(0, len(coords)):
+        esp_i = 0
+        for j in range(0, len(coords)):
+            if j != i: ### richtig oder doch andersrum?
+                dist_i = np.linalg.norm(coords[i] - coords[j])
+                charge_i = dict_frames[key]
+                charge_i = charge_i[i,4]
+                # calculate the esp on atom i
+                esp_i += charge_i / dist_i
+        esp_values.append(esp_i)
+
+    # write ESPs to ESP dictionary
+    dict_esp[key] = esp_values
+                
+
+#print('ESP Dictionary:\n')
+#for key in dict_esp:
+#    print(key, dict_esp[key], '\n')
+
+with open('esp_output3', 'w') as file:
+    for key in dict_esp:
+        value = dict_esp[key]
+        output_string = str(key)
+        for i in range(0, len(value)):
+            output_string += ' ' + str(value[i])
+        file.write(f'{output_string}\n') 
