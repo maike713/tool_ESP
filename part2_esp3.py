@@ -83,7 +83,7 @@ dict_frames = read_coords_charges(file_path, frames, empty_lines)
 #empty dictionary to store ESPs per frame
 dict_esp = {}
 
-#print('\nDictionary:')
+print('\nDictionary:')
 
 # loop through the frames
 for key in dict_frames:
@@ -105,14 +105,25 @@ for key in dict_frames:
     # calculate the distance and charge between atom i and all other atoms
     for i in range(0, len(coords)):
         esp_i = 0
+        ### something's wrong, sum_charge is not about -1
+        sum_charge = 0
+        
+        print(f'New atom {i}')
         for j in range(0, len(coords)):
             if j != i: ### richtig oder doch andersrum?
                 dist_i = np.linalg.norm(coords[i] - coords[j])
                 charge_i = dict_frames[key]
-                charge_i = charge_i[i,4]
+                charge_i = charge_i[j,4]
+                #charge_i = charge_i[i,4]
+                #print('Charge atom i: ', charge_i)
                 # calculate the esp on atom i
                 esp_i += charge_i / dist_i
+                ###
+                sum_charge += charge_i
+
+            print('Sum over charges on atom i: ', sum_charge)
         esp_values.append(esp_i)
+                
 
     # write ESPs to ESP dictionary
     dict_esp[key] = esp_values
