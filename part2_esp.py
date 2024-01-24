@@ -39,22 +39,16 @@ def find_frames(file_path):
 def read_coords_charges(file_path, frames, empty_lines):
     # create empty dictionary 
     dict_frames = {}
-    #print(frame_value[:,0])
     # create dictionary to convert atom labels to numbers
     dict_atomtypes = {'c':1, 'h':2, 's':3}
 
     with open(file_path, 'r') as file:
         # read all lines as strings into list 'all_lines'
         all_lines = file.readlines()
-        #print(all_lines[2].split())
-        #print(all_lines[2])
-        #print(type(all_lines[2]))
-        #print(type(all_lines))
         
         for i in range(0, len(frames)):
             # generate keys for dict_frames
             frame_label = i
-            #print(frame_label)
 
             # generate values for dict_frames in the form of:
                 # [[x(atom1), y(atom1), z(atom1), q(atom1)]
@@ -66,7 +60,6 @@ def read_coords_charges(file_path, frames, empty_lines):
                 # split the string with index frames[i] + j in all_lines
                 to_append = np.array([ all_lines[int(frames[i]) + j].split() ])
                 k = to_append[:,0]
-                #print(k)
                 to_append[:,0] = dict_atomtypes[k[0]]
                 frame_value[j,:] = to_append
 
@@ -121,20 +114,16 @@ dict_hubbard = {
             }
 
 frames, empty_lines, atom_count = find_frames(file_path)
-#print(frames)
-#print(empty_lines)
-#print(atom_count)
 
 dict_frames = read_coords_charges(file_path, frames, empty_lines)
+
 #empty dictionary to store ESPs per frame
 dict_esp = {}
 dict_esp_vgl = {}
 
-#print('\nDictionary:')
 
 # loop through the frames
 for key in dict_frames:
-    #print(key, dict_frames[key], '\n')
     # empty list to store coordinates of a frame
     coords = []
     # empty list to store quotient = distance / charge of a frame
@@ -142,7 +131,6 @@ for key in dict_frames:
     # empty list to store ESPs of a frame
     esp_values = []
     esp_values_vgl = []
-    print(f'Frame {key}\n')
 
     # loop through the atoms in a frame
     for i in range(0, atom_count):
@@ -151,29 +139,23 @@ for key in dict_frames:
         coord_vector_i = np.array([ coord_vector_i[i,1], coord_vector_i[i,2], coord_vector_i[i,3] ])
         # convert distance from Angstrom to Bohr
         coords.append(coord_vector_i * 0.5291772)
-        #print(coords)
 
     # calculate the distance and charge between atom i and all other atoms
-    for i in range(0, len(coords)):
+    for i in range(0, atom_count):
         esp_i = 0
         esp_i_vgl = 0
-        ### something's wrong, ESPs about as high as ESPs from GMX
-        sum_charge = 0
-        sum_gamma = 0
 
-        #print(f'\nNew atom {i}')
-        for j in range(0, len(coords)):
+        for j in range(0, atom_count):
             if j != i: ### richtig oder doch andersrum?
                 dist_i = np.linalg.norm(coords[i] - coords[j])
-                charge_i = dict_frames[key]
-                charge_i = charge_i[j,4]
-                #print('Charge atom i: ', charge_i)
+                charge_j = dict_frames[key]
+                charge_j = charge_j[j,4]
                 # differentiate between ESP between same or different atom types
                 atom_type_i = dict_frames[key]
                 atom_type_i = int(atom_type_i[i,0])
                 atom_type_j = dict_frames[key]
                 atom_type_j = int(atom_type_j[j,0])
-                if atom_type_i == atom_type_i:
+                if atom_type_i == atom_type_j:
                     hubbard1  = dict_atomtypes_reverse[atom_type_i]
                     hubbard1 = dict_hubbard[hubbard1]
                     gamma_result = g_case_a_eq_b(hubbard1, dist_i)
@@ -183,15 +165,9 @@ for key in dict_frames:
                     hubbard2 = dict_atomtypes_reverse[atom_type_j]
                     hubbard2 = dict_hubbard[hubbard2]
                     gamma_result = f_case_a_neq_b(hubbard1, hubbard2, dist_i)
-                #print(gamma_result)
                 # change sign of esp to be compatible with DFTB+ output
-                esp_i += charge_i * gamma_result * (-1) # ESP in a.u.
-                esp_i_vgl += charge_i / dist_i * (-1)
-                ###
-                sum_charge += charge_i
-                sum_gamma += gamma_result
-            #print(f'Sum over gamma results on atom {i}: {sum_gamma}') # seems to be correct
-            #print('Sum over charges on atom i: ', sum_charge)
+                esp_i += charge_j * gamma_result * (-1) # ESP in a.u.
+                esp_i_vgl += charge_j / dist_i * (-1)
         esp_values.append(esp_i)
         esp_values_vgl.append(esp_i_vgl)
                 
@@ -200,11 +176,8 @@ for key in dict_frames:
     dict_esp[key] = esp_values
     dict_esp_vgl[key] = esp_values_vgl            
 
-#print('ESP Dictionary:\n')
-#for key in dict_esp:
-#    print(key, dict_esp[key], '\n')
 
-with open('esp_output3', 'w') as file:
+with open('esp_output', 'w') as file:
     file.write('QM potential induced on the QM atoms (ESP) in a.u.:\n')
     for key in dict_esp:
         value = dict_esp[key]
@@ -213,7 +186,7 @@ with open('esp_output3', 'w') as file:
             output_string += ' ' + str(value[i])
         file.write(f'{output_string}\n') 
 
-with open('esp_output3_vgl', 'w') as file:
+with open('esp_output_wo_gamma', 'w') as file:
     file.write('QM potential induced on the QM atoms (ESP) in a.u.:\n')
     for key in dict_esp_vgl:
         value = dict_esp_vgl[key]
@@ -221,3 +194,5 @@ with open('esp_output3_vgl', 'w') as file:
         for i in range(0, len(value)):
             output_string += ' ' + str(value[i])
         file.write(f'{output_string}\n')
+
+print('Output with gamma function written to esp_output, with 1/r to esp_output_wo_gamma')
