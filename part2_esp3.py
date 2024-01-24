@@ -128,6 +128,7 @@ frames, empty_lines, atom_count = find_frames(file_path)
 dict_frames = read_coords_charges(file_path, frames, empty_lines)
 #empty dictionary to store ESPs per frame
 dict_esp = {}
+dict_esp_vgl = {}
 
 #print('\nDictionary:')
 
@@ -140,6 +141,7 @@ for key in dict_frames:
     quotient = []
     # empty list to store ESPs of a frame
     esp_values = []
+    esp_values_vgl = []
     print(f'Frame {key}\n')
 
     # loop through the atoms in a frame
@@ -154,16 +156,17 @@ for key in dict_frames:
     # calculate the distance and charge between atom i and all other atoms
     for i in range(0, len(coords)):
         esp_i = 0
-        ### something's wrong, sum_charge is not about -1
+        esp_i_vgl = 0
+        ### something's wrong, ESPs about as high as ESPs from GMX
         sum_charge = 0
-        
+        sum_gamma = 0
+
         #print(f'\nNew atom {i}')
         for j in range(0, len(coords)):
             if j != i: ### richtig oder doch andersrum?
                 dist_i = np.linalg.norm(coords[i] - coords[j])
                 charge_i = dict_frames[key]
                 charge_i = charge_i[j,4]
-                #charge_i = charge_i[i,4]
                 #print('Charge atom i: ', charge_i)
                 # differentiate between ESP between same or different atom types
                 atom_type_i = dict_frames[key]
@@ -182,17 +185,20 @@ for key in dict_frames:
                     gamma_result = f_case_a_neq_b(hubbard1, hubbard2, dist_i)
                 #print(gamma_result)
                 # change sign of esp to be compatible with DFTB+ output
-                esp_i += charge_i / gamma_result * (-1) # ESP in a.u.
+                esp_i += charge_i * gamma_result * (-1) # ESP in a.u.
+                esp_i_vgl += charge_i / dist_i * (-1)
                 ###
                 sum_charge += charge_i
-
+                sum_gamma += gamma_result
+            #print(f'Sum over gamma results on atom {i}: {sum_gamma}') # seems to be correct
             #print('Sum over charges on atom i: ', sum_charge)
         esp_values.append(esp_i)
+        esp_values_vgl.append(esp_i_vgl)
                 
 
     # write ESPs to ESP dictionary
     dict_esp[key] = esp_values
-                
+    dict_esp_vgl[key] = esp_values_vgl            
 
 #print('ESP Dictionary:\n')
 #for key in dict_esp:
@@ -206,3 +212,12 @@ with open('esp_output3', 'w') as file:
         for i in range(0, len(value)):
             output_string += ' ' + str(value[i])
         file.write(f'{output_string}\n') 
+
+with open('esp_output3_vgl', 'w') as file:
+    file.write('QM potential induced on the QM atoms (ESP) in a.u.:\n')
+    for key in dict_esp_vgl:
+        value = dict_esp_vgl[key]
+        output_string = str(key)
+        for i in range(0, len(value)):
+            output_string += ' ' + str(value[i])
+        file.write(f'{output_string}\n')
