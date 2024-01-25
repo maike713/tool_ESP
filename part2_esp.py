@@ -1,6 +1,8 @@
+# empty_lines as output not needed ?!
+
 import numpy as np
 
-#file_path = 'test.qxyz'
+# .qxyz input file from DFTB calculation
 file_path = 'qm_dftb_qm.qxyz'
 
 # function to detect how many frames and atoms per frame are in the input file
@@ -33,10 +35,10 @@ def find_frames(file_path):
     empty_lines_count = len(empty_lines)
 
 
-    return frames, empty_lines, atom_count1
+    return frames, atom_count1
 
 # function to get the coordinates and charges from the input file
-def read_coords_charges(file_path, frames, empty_lines):
+def read_coords_charges(file_path, frames):
     # create empty dictionary 
     dict_frames = {}
     # create dictionary to convert atom labels to numbers
@@ -98,8 +100,8 @@ def f_case_a_neq_b(hubbard1: float,hubbard2: float, x_range: np.array)->float:
 dict_atomtypes_reverse = {1:'C', 2:'H', 3:'S'}
 
 # dictionary to define hubbard units
-#unit_conversion_bohr_to_nm = 1/ 0.0529177249
-unit_conversion_bohr_to_nm = 1  # for a.u.
+#unit_conversion_bohr_to_nm = 1/ 0.0529177249   # for SI units
+unit_conversion_bohr_to_nm = 1                  # for a.u.
 dict_hubbard = {
            "C": 0.3647*unit_conversion_bohr_to_nm,
             "H": 0.4195*unit_conversion_bohr_to_nm,
@@ -113,9 +115,10 @@ dict_hubbard = {
             "S": 0.3288*unit_conversion_bohr_to_nm,
             }
 
-frames, empty_lines, atom_count = find_frames(file_path)
-
-dict_frames = read_coords_charges(file_path, frames, empty_lines)
+## get frames and atom count
+frames, atom_count = find_frames(file_path)
+## get the coordinates and charges
+dict_frames = read_coords_charges(file_path, frames)
 
 #empty dictionary to store ESPs per frame
 dict_esp = {}

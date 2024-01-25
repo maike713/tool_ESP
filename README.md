@@ -1,6 +1,7 @@
 # PART 1:
 consists of:
 - part1.py
+- part1_mod.py
 - run_gmx2016.sh
 
 all for single precision use
@@ -12,7 +13,6 @@ position.
 files needed:
 - .xtc-file
 - .tpr-file
-- .ndx-file with QM_region and without Link Atoms (debatable)
 
 input:
 - for 41-/43-systems: python3 part1.py 347 349 1683 1685 2139 2141 3251 22 2 27
@@ -33,7 +33,7 @@ The location of the input-files is arbitrary.
 Output:
 - full.gro
 
-Recommended input for the trjconv command:
+Recommended input for the trjconv commands:
 output: 0 (System)
 
 ## part1_mod.py
@@ -93,19 +93,13 @@ qsub single_submit.sh
 
 ## part2_esp.py
 Calculates the ESP from the QM on itself. Reads the input file
-'qm_dftb_qm.qxyz' and writes the ESPs to the output file 'esp_output'.
+'qm_dftb_qm.qxyz' and writes the ESPs to the output file 'esp_output' where the
+gamma function was used and to 'esp_output_wo_gama' if Coulomb (1/r) was used.
 
-TO DO:
-- ESP for first step calculated, need ESPs for other steps
-- Ask for the atoms in the QM zone or get them with the input file
-- change delimiter in output file from ',' to ' '
 
-ATTENTTION:
-part2_esp1.py: weird values for ESP, to high? Discarded because of problems with
-writing to output file
 
-part2_esp2.py: way smaller values for ESP, used because of nice writing to
-output file
+# TO DO
+- change code of part1 so that the number of link atoms can be chosen
 
 # Tested in:
 tcb:/data/user1/HiWi_Maike/tool/test_5A_k5000_41/231213
