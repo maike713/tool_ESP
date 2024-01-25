@@ -43,7 +43,6 @@ group_1 = '{:>5}'.format(sys.argv[8])
 group_2 = '{:>5}'.format(sys.argv[9])
 group_3 = '{:>5}'.format(sys.argv[10])
 
-print(type(group_1))
 
 file_list = os.listdir('frames')
 

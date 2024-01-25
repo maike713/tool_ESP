@@ -67,6 +67,7 @@ Output:
 consists of:
 - part2.sh
 - part2_esp.py
+- plot_esp.py
 
 ## part2.sh
 Generates a .tpr-file for the QM rerun
@@ -97,9 +98,15 @@ Calculates the ESP from the QM on itself. Reads the input file
 gamma function was used and to 'esp_output_wo_gama' if Coulomb (1/r) was used.
 
 
+## plot_esp.py
+Example for plotting the results for ESP given by GROMACS and the correction
+from part2_esp.py. Includes the conversion factor from a.u. to SI units.
+
 
 # TO DO
 - change code of part1 so that the number of link atoms can be chosen
+- change part1_mod so that the distance between the Ca and Cb are used for the
+  ERROR file
 
 # Tested in:
 tcb:/data/user1/HiWi_Maike/tool/test_5A_k5000_41/231213
