@@ -1,0 +1,65 @@
+Hamiltonian = DFTB {
+  SCC = Yes
+#  SCCTolerance = 1e-10
+  Charge = -1.000
+  MaxAngularMomentum {
+   Br = "d"
+    C = "p"
+   Cl = "d"
+    F = "p"
+    H = "s"
+    I = "d"
+    N = "p"
+    O = "p"
+    P = "d"
+    S = "d"
+  }
+  SlaterKosterFiles = Type2FileNames {
+    Prefix = "/home/dmaag/PARAMETERS/3ob-3-1_mod_S-S_B3LYP/"  
+    Separator = "-"
+    Suffix = ".skf"
+  }
+  ThirdOrderFull = Yes
+  HubbardDerivs {
+   Br = -0.0573
+    C = -0.1492
+   Cl = -0.0697
+    F = -0.1623
+    H = -0.1857
+    I = -0.0433
+    N = -0.1535
+    O = -0.1575
+    P = -0.14
+    S = -0.11
+  }
+  HCorrection = Damping {
+    Exponent = 4.0
+# Filling = Fermi { Temperature [K] = 300. }
+
+  }
+  Dispersion = DftD3 {
+    Damping = BeckeJohnson {
+      a1 = 0.746
+      a2 = 4.191
+    }   
+    s6 = 1.0 
+    s8 = 3.209
+  }
+  Filling = Fermi {
+    Temperature [K] = 300.0
+  }
+#ReadShifts = yes
+}
+
+Analysis = {
+  CalculateForces = Yes
+}
+
+Options = {
+  WriteDetailedOut = No
+}
+
+ParserOptions = {
+  ParserVersion = 9
+  IgnoreUnprocessedNodes = Yes
+}
