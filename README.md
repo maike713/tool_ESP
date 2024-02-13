@@ -1,111 +1,139 @@
-# PART 1:
-consists of:
-- part1.py
-- part1_mod.py
-- run_gmx2016.sh
+# Introduction
 
-all for single precision use
+This tool extends the functionality of GROMACS/DFTB3 by calculating
+electrostatic potentials (ESPs) directly from the atoms within the quantum
+mechanics (QM) region. Unlike GROMACS/DFTB3, which provides ESP values solely
+from the molecular mechanics (MM) on the QM region, this tool offers
+corrections to compute ESP values directly from the QM atoms themselves.
+Additionally, it facilitates the preparation of classical MM simulations for
+QM/MM reruns and thus ESP values for MM simulations can be generated.
 
-## part1.py:
-Reads an .xtc-file, writes all the .gro-files and puts Link Atoms in the right
-position.
+# Part 1: Link Atom Placement Tool
 
-files needed:
-- .xtc-file
-- .tpr-file
+Part 1 of the tool consists of two essential components:
+- `part1.py`
+- `run\_gmx2016.sh`
+And one additional component:
+- `part1\_mod.py`
 
-input:
-- for 41-/43-systems: python3 part1.py 347 349 1683 1685 2139 2141 3251 22 2 27
-- for 71-/73-systems: python3 part1.py 347 349 2104 2106 3235 3237 3251 22 27 2
+## Description:
 
-input numbers stand for: C-alpha 1, C-beta 1, C-alpha 2, C-beta 2, C-alpha 3
-C-beta 3, first solvent atom, group numbers of the relevant residues
+The purpose of this part is to read an .xtc-file, generate .gro-files and insert
+Link Atoms at appropriate positions (`part1.py`). Then, an older GROMACS version
+needs to be sourced that is able to convert the resulting .gro-file to a
+trajectory file (`run\_gmx2016.sh`).
 
-ATTENTION: the input numbers are the LINE NUMBERS and not the atom numbers!!
-As python starts counting at 0, a line number of 348 results in an input number
-of 347
+## Requirements:
 
-The frames are saved as .gro-files in subdirectory 'frames'.
-The new frames with the added Link Atoms are in the subdirectory 'new_frames'.
-This script should be in the parent directory of 'frames'.
-The location of the input-files is arbitrary.
+- .xtc-file of a classical MM simulation
+- .tpr-file of the same system
 
-Output:
-- full.gro
+## Usage:
 
-Recommended input for the trjconv commands:
-output: 0 (System)
+- `python3 part1.py *C-alpha1 C-beta1 C-alpha2 C-beta2 C-alpha3 C-beta3 first\_sol
+gr_nr1 gr_nr2 gr_nr3*`
 
-## part1_mod.py
-This script can be used if the frames from the original .xtc-file were successfully
-generated but something's wrong with adding the Link Atoms.
+Where the input numbers represent the line numbers of the C-alpha and C-beta
+atoms, of the first solvent atom and of the group numbers of the relevant
+residues.
 
-This script uses the frames and adds the Link Atoms.
+- `source ./run\_gmx2016.sh`
 
-It's for example useful if the centering didn't work with one frame. Then
-part1.py generates a trajectory until this frame. The frames after the broken
-one can be copied to a new directory as well as this script. It can then
-generate the trajectory from the frame after the broken one.
+## Note:
 
-Another use is for testing with QM/MM simulations. Generate frames from the
-.xtc-file with part1.py, delete the Link Atoms with "sed -i '/XXX/d' frame*.gro"
-and generate with part1_mod.py the new_frame*.gro files. ATTENTION: for this
-case, the checksum at the beginning of the new_frame.gro-files needs to be three
-atoms lower ("sed -i 's/149890/149887/g' full.gro").
+- Input numbers correspond to line numbers, not atom numbers.
+- Python uses zero-based indexing, so a line number of 348 results in an input
+  of 347.
+- Frames are saved in the 'frames' subdirectory, while frame with added Link
+  Atoms are stored in 'new\_frames'.
+- The script should reside in the parent directory of 'frames'.
+- If the bond between C-alpha and C-beta atoms is broken due to periodic
+  boundary conditions, the tool cannot provide the correct coordinates. This is
+  prevented by the ´trjconv -pbc whole´ option. If this fails and the distance
+  between two C-alpha anc C-beta atoms is longer than 1 nm, the tool provides an
+  `ERROR.txt` file with the frame of the probably broken molecule.
 
-## run_gmx2016.sh
-run with 'source ./run_gmx2016.sh'
+## Output:
 
-File to source the right GROMACS version to convert the modified .gro-files to a
-new .xtc-file.
-Converts the modified .gro-files to a new .xtc-file.
+- `full.gro`
+- `ERROR.txt` (hopefully not)
+- `full.xtc`
 
-Output:
-- full.xtc
+## Recommended Usage for Specific Systems:
+
+- For 41-/43-systems: `python3 part1.py 347 349 1683 1685 2139 2141 3251 22 2
+  27`
+- For 71-/73-systems: `python3 part1.py 347 349 2104 2106 3235 3237 3251 22 27
+  2`
+- Recommended input for the `trjconv` commands: `output: 0 (System)`
+
+## part1\_mod.py
+
+This script serves as a fallback option if there were issues with adding the
+Link Atoms to the frames generated from the original .xtc-file.
+
+### Usage Scenarios:
+
+1. Fixing Frame Generation Issues:
+This script can come in handy if the frames were successfully generated from the
+original .xtc-file but encountered problems with adding Link Atoms. For
+instance, if centering failed for one frame, part1.py can generate a trajectory
+until that frame. Subsequently, the frames after the problematic one can be
+copied to a new directory along with this script. Then, this script can add the
+Link Atoms starting from the frame following the problematic one.
+
+2. Testing with QM/MM Simulations:
+Another use-case is for testing the tool with actual QM/MM simulations, for
+example if the code was modified. First, generate frames from the .xtc-file
+using part1.py. Then, delete the Link Atoms using "sed -i '/XXX/d'
+frame\*.gro". Next, use part1\_mod.py to generate new\_frame\*.gro files. Note: For
+this scenario, ensure that the checksum at the beginning of the new\_frame.gro
+files is three atoms lower by using "sed -i 's/149890/149887/g' full.gro".
+
 
 # PART 2
 consists of:
 - part2.sh
-- part2_esp.py
-- plot_esp.py
+- part2\_esp.py
+- plot\_esp.py
 
 ## part2.sh
 Generates a .tpr-file for the QM rerun
 
-ATTENTION: generate .ndx-file with new_frame0.gro and add the QM region.
+ATTENTION: generate .ndx-file with new\_frame0.gro and add the QM region.
 Otherwise there will be 3 atoms missing in the .ndx-file.
 
 files needed:
 - .top-file -> changed for QM simulations
 - .ndx-file -> changed for QM simulations
-- new_frame0.gro
+- new\_frame0.gro
 - full.xtc
-- dftb_in.hsd
+- dftb\_in.hsd
 - .mdp-file
-- single_submit.sh -> changed for rerun
+- single\_submit.sh -> changed for rerun
 
 input:
-- ./part2.sh *.mdp *.gro *.top *.ndx
+- ./part2.sh \*.mdp \*.gro \*.top \*.ndx
 
 After the successfull generation of md.tpr: submit with:
 
-qsub single_submit.sh
+qsub single\_submit.sh
 
 
-## part2_esp.py
+## part2\_esp.py
 Calculates the ESP from the QM on itself. Reads the input file
-'qm_dftb_qm.qxyz' and writes the ESPs to the output file 'esp_output' where the
-gamma function was used and to 'esp_output_wo_gama' if Coulomb (1/r) was used.
+`qm\_dftb\_qm.qxyz` and writes the ESPs to the output file `esp\_output` where the
+gamma function was used and to `esp\_output\_wo\_gama` if Coulomb (1/r) was used.
 
 
-## plot_esp.py
+## plot\_esp.py
 Example for plotting the results for ESP given by GROMACS and the correction
-from part2_esp.py. Includes the conversion factor from a.u. to SI units.
+from part2\_esp.py. Includes the conversion factor from a.u. to SI units.
 
 
 # TO DO
 - change code of part1 so that the number of link atoms can be chosen
-- change part1_mod so that the distance between the Ca and Cb are used for the
+- change part1\_mod so that the distance between the Ca and Cb are used for the
   ERROR file
 
 # Tested in:
