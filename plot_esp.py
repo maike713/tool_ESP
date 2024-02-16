@@ -5,7 +5,7 @@ import math
 plt.style.use('tableau-colorblind10')
 
 # conversion factor and * (-1) to get right sign convention
-# cf = 4 Pi epsilon_0 * a_0/e = e / H
+# cf = 4 Pi epsilon_0 * a_0/e = e / E_h
 cf = (1.6021766 * 10**(-19)) / (4.359745 * 10**(-18)) * (-1)
 
 time = np.loadtxt('qm_dftb_esp.xvg')[:,0] * 0.5 / 1000

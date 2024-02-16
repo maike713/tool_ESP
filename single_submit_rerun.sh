@@ -10,9 +10,9 @@ source /usr/local/run/gromacs-dftbplus-machine-learning/bin/GMXRC
 
 export OMP_NUM_THREADS=1
 export GMX_QMMM_VARIANT=1 # defines type of electrostatics 0= ewald , 1= ewald mesh 2-4= different cut-offs
-export GMX_DFTB_ESP=1
-export GMX_DFTB_CHARGES=1
-export GMX_DFTB_QM_COORD=1
+export GMX_DFTB_ESP=100
+export GMX_DFTB_CHARGES=100
+export GMX_DFTB_QM_COORD=100
 
 
 current=$PWD
