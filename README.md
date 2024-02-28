@@ -142,8 +142,11 @@ to `esp_output`.
     The ESP from `esp_output` is added to the ESP from the MM on the QM region
 (`qm_dftb_esp.xvg`) to get the full ESP. It creates a Numpy binary file
 (`esp_full.npy`) and a txt file (`esp_full.txt`). The script also converts the
-atom units (electronic charge / Hartree) to SI units. It also changes the sign,
-as DFTB+ gives negative charges a positive sign.
+atomic units (electronic charge / Hartree) to SI units. It also changes the sign
+of the partial ESP, as DFTB+ gives negative charges a positive sign. Please note
+that the sign of the output file `qm_dftb_charges.xvg` is correct, so the ESP
+within the QM region in the file `esp_output` is already has the right sign and
+only needs to be converted to SI units.
 
 5. `python3 plot_esp.py`
     Facilitates visualization by plotting the full ESP.
