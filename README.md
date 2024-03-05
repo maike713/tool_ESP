@@ -113,7 +113,7 @@ get the full ESP. During this step, the atomic units are converted to SI units
 - `dftb_in.hsd`
 - `.mdp` file with instructions for a QM/MM simulation (the provided file should
   be fine for most cases)
-- `singe_submit_rerun.sh` -> changed for a QM/MM rerun
+- `single_submit_rerun.sh` -> changed for a QM/MM rerun
 - `new_frame0.gro`
 - `full.xtc`
 
@@ -124,9 +124,9 @@ get the full ESP. During this step, the atomic units are converted to SI units
    'q'). Add the section '[QM\_region]' at the bottom of the index file with the
    number of the atoms in the QM region.
 
-2. `./make_tpr.sh *.mpd *.gro *.top *.ndx`
+2. `./make_tpr.sh *.mdp *.gro *.top *.ndx`
     This generates the `md.tpr` file that is needed as input for the QM rerun.
-    Change the submission script `single_submit.sh` according to your needs.
+    Change the submission script `single_submit_rerun.sh` according to your needs.
 The provided default should work but if the original simulation was a classical
 MM simulation, the files should be exported more often (`export GMX_DFTB_ESP=1`,
 `export GMX_DFTB_CHARGES=1` and `export GMX_DFTB_QM_COORD=1`). The name of the rerun
