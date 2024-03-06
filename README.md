@@ -151,22 +151,19 @@ only needs to be converted to SI units.
 5. `python3 plot_esp.py`
     Facilitates visualization by plotting the full ESP.
 
-# Output
+## Output
 
 - `md.tpr`
 - `qm_dftb_qm.qxyz`
 - `esp_output`
 
 
-# TO DO
-- change code of laplace so that the number of link atoms can be chosen
-- change laplace\_mod so that the distance between the Ca and Cb are used for the
+# Supplementary Info
+- `LA_position.svg` shows the position where the Link Atom is placed.
+- `flowchart.svg` and `flowchart.png` illustrate the work flow of the tool.
+
+
+# Planned Improvements
+- change code of `laplace.py` so that the number of Link Atoms can be chosen
+- change `laplace_mod.py` so that the distance between the Ca and Cb are used for the
   ERROR file
-
-# Tested in:
-tcb:/data/user1/HiWi_Maike/tool/test_5A_k5000_41/231213
-
-hyd:/data/user1/MAIKE/tool/test_5A_k5000_41/231213
-
-Test runs in tcb:/data/user1/HiWi_Maike/tool/test_5A_k5000_41/231231 without
-index file
