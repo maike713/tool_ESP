@@ -167,3 +167,5 @@ only needs to be converted to SI units.
 - change code of `laplace.py` so that the number of Link Atoms can be chosen
 - change `laplace_mod.py` so that the distance between the Ca and Cb are used for the
   ERROR file
+- rewrite the function `coord` in `laplace.py` and `laplace_mod.py` so that it does not
+  use a global variable

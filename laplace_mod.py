@@ -47,7 +47,7 @@ group_3 = '{:>5}'.format(sys.argv[10])
 file_list = os.listdir('frames')
 
 # function to get the coordinates as a vector
-## global variable 'lines' in function -> meh
+## global variable 'lines' in function -> change this in future implementations
 def coord(num_line):
     lines_string = str(lines[num_line])
     vec = np.array([float(lines_string.split()[3]),float(lines_string.split()[4]), float(lines_string.split()[5])])
