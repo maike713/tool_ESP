@@ -20,13 +20,13 @@
 
 import subprocess
 import sys
-import numpy as np
 import os
 import glob
+import numpy as np
 from sklearn.metrics.pairwise import euclidean_distances
 
 # parameter to change the accuracy of the centering test
-p = 1.0
+P = 1.0
 
 # input
 xtc = str(input('Enter the name of the .xtc-file:\n'))
@@ -57,13 +57,13 @@ try:
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 
-a1 = int(sys.argv[1])
-b1 = int(sys.argv[2])
-a2 = int(sys.argv[3])
-b2 = int(sys.argv[4])
-a3 = int(sys.argv[5])
-b3 = int(sys.argv[6])
-sol = int(sys.argv[7])
+A1 = int(sys.argv[1])
+B1 = int(sys.argv[2])
+A2 = int(sys.argv[3])
+B2 = int(sys.argv[4])
+A3 = int(sys.argv[5])
+B3 = int(sys.argv[6])
+SOL = int(sys.argv[7])
 
 # format to be 5 characters long
 group_1 = '{:>5}'.format(sys.argv[8])
@@ -92,12 +92,12 @@ for file_name in file_list:
         total_atoms = int(lines[1]) + 3
 
         # get the coordinates of Ca and Cb atoms
-        vec_ca1 = coord(a1)
-        vec_cb1 = coord(b1)
-        vec_ca2 = coord(a2)
-        vec_cb2 = coord(b2)
-        vec_ca3 = coord(a3)
-        vec_cb3 = coord(b3)
+        vec_ca1 = coord(A1)
+        vec_cb1 = coord(B1)
+        vec_ca2 = coord(A2)
+        vec_cb2 = coord(B2)
+        vec_ca3 = coord(A3)
+        vec_cb3 = coord(B3)
 
         # calculate the vectors to the link atoms and round to three decimals
         vec_la1 = np.round(0.72 * (vec_ca1 - vec_cb1) + vec_cb1, decimals = 3)
@@ -110,25 +110,24 @@ for file_name in file_list:
     # control mechanism: should detect broken QM-zone
 
     # create 2D-arrays that sklearn can work with
-    vec_ca1_2d = np.array(vec_ca1, dtype = float).reshape(1,-1)
-    vec_ca2_2d = np.array(vec_ca2, dtype = float).reshape(1,-1)
-    vec_ca3_2d = np.array(vec_ca3, dtype = float).reshape(1,-1)
+    vec_ca1_2d = np.array(vec_ca1, dtype=float).reshape(1, -1)
+    vec_ca2_2d = np.array(vec_ca2, dtype=float).reshape(1, -1)
+    vec_ca3_2d = np.array(vec_ca3, dtype=float).reshape(1, -1)
 
-    vec_cb1_2d = np.array(vec_cb1, dtype = float).reshape(1,-1)
-    vec_cb2_2d = np.array(vec_cb2, dtype = float).reshape(1,-1)
-    vec_cb3_2d = np.array(vec_cb3, dtype = float).reshape(1,-1)
+    vec_cb1_2d = np.array(vec_cb1, dtype=float).reshape(1, -1)
+    vec_cb2_2d = np.array(vec_cb2, dtype=float).reshape(1, -1)
+    vec_cb3_2d = np.array(vec_cb3, dtype=float).reshape(1, -1)
 
     # calculate the distances between Calpha and Cbeta
     dist_ca1_cb1 = euclidean_distances(vec_ca1_2d, vec_cb1_2d)
     dist_ca2_cb2 = euclidean_distances(vec_ca2_2d, vec_cb2_2d)
     dist_ca3_cb3 = euclidean_distances(vec_ca3_2d, vec_cb3_2d)
 
-    if dist_ca1_cb1 > p or dist_ca2_cb2 > p or dist_ca3_cb3 > p:
+    if dist_ca1_cb1 > P or dist_ca2_cb2 > P or dist_ca3_cb3 > P:
         print('BROKEN MOLECULE')
         with open('ERROR.txt', 'a') as error_file:
             error_file.write(f'\nERROR probably broken molecule file {file_name}\n')
             error_file.write(f'{dist_ca1_cb1}, {dist_ca2_cb2}, {dist_ca3_cb3}\n')
-
 
     output_file_path = os.path.join('new_frames', f'new_{file_name}')
 
@@ -141,16 +140,16 @@ for file_name in file_list:
         new_file.write(f'{total_atoms}\n')
 
         # write all lines just before SOL
-        for i in range(2, sol):
+        for i in range(2, SOL):
             new_file.write(lines[i])
 
         # write the Link Atoms
-        new_file.write(f'{group_1}XXX     LA {sol - 1}{vec_la1[0]}{vec_la1[1]}{vec_la1[2]}\n')
-        new_file.write(f'{group_2}XXX     LA {sol}{vec_la2[0]}{vec_la2[1]}{vec_la2[2]}\n')
-        new_file.write(f'{group_3}XXX     LA {sol + 1}{vec_la3[0]}{vec_la3[1]}{vec_la3[2]}\n')
+        new_file.write(f'{group_1}XXX     LA {SOL - 1}{vec_la1[0]}{vec_la1[1]}{vec_la1[2]}\n')
+        new_file.write(f'{group_2}XXX     LA {SOL}{vec_la2[0]}{vec_la2[1]}{vec_la2[2]}\n')
+        new_file.write(f'{group_3}XXX     LA {SOL + 1}{vec_la3[0]}{vec_la3[1]}{vec_la3[2]}\n')
 
         # write the SOL atoms
-        for i in range(sol, len(lines)):
+        for i in range(SOL, len(lines)):
             new_file.write(lines[i])
 
 
@@ -165,7 +164,7 @@ print(file_list)
 for file_name in file_list:
     input_file_path = os.path.join('.', file_name)
     output_file_path = os.path.join('.', 'full.gro')
-    
+ 
     # read all the .gro files
     with open(input_file_path, 'r') as file:
         lines = file.readlines()
