@@ -1,23 +1,3 @@
-###################
-# for GROMACS with single precision
-
-# input 41: python3 part1.py 347 349 1683 1685 2139 2141 3251 22 2 27
-# input 73: python3 part1.py 347 349 2104 2106 3235 3237 3251 22 27 2
-# explanation:               ca1 cb1 ca2  cb2  ca3  cb3  sol  group-numbers
-
-###### FILES NEEDED:
-# .xtc-file
-# .tpr-file
-
-## frames are saved as .gro-files in subdirectory 'frames'
-# this script should be in the parent directory of 'frames'
-# the input files (xtc, tpr) can be anywhere
-
-## input for the trjconv command:
-# output: 0 (System)
-
-####################
-
 import subprocess
 import sys
 import os
@@ -29,31 +9,31 @@ from sklearn.metrics.pairwise import euclidean_distances
 P = 1.0
 
 # input
-xtc = str(input('Enter the name of the .xtc-file:\n'))
-tpr = str(input('Enter the name of the .tpr-file:\n'))
+XTC = str(input('Enter the name of the .xtc-file:\n'))
+TPR = str(input('Enter the name of the .tpr-file:\n'))
 
 # make a directory to store the frames
 try:
-    subprocess.run('mkdir frames', shell = True, check = True)
+    subprocess.run('mkdir frames', shell=True, check=True)
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 
 # make a directory 'new_frames' to store the new files
 try:
-    subprocess.run('mkdir new_frames', shell = True, check = True)
+    subprocess.run('mkdir new_frames', shell=True, check=True)
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 
-command1 = f'gmx trjconv -f {xtc} -s {tpr} -pbc whole -o whole.xtc'
+command1 = f'gmx trjconv -f {XTC} -s {TPR} -pbc whole -o whole.xtc'
 # execute the command in the frames subdirectory
 # one directory back because the command is executed in a subdirectory
-command2 = f'gmx trjconv -f ../whole.xtc -s ../{tpr} -pbc mol -sep -o frame.gro'
+command2 = f'gmx trjconv -f ../whole.xtc -s ../{TPR} -pbc mol -sep -o frame.gro'
 try:
-    subprocess.run(command1, shell = True, check = True, cwd = '.')
+    subprocess.run(command1, shell=True, check=True, cwd='.')
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 try:
-    subprocess.run(command2, shell = True, check = True, cwd = './frames')
+    subprocess.run(command2, shell=True, check=True, cwd='./frames')
 except subprocess.CalledProcessError as e:
     print(f'Error executing command: {e}')
 
@@ -66,19 +46,29 @@ B3 = int(sys.argv[6])
 SOL = int(sys.argv[7])
 
 # format to be 5 characters long
-group_1 = '{:>5}'.format(sys.argv[8])
-group_2 = '{:>5}'.format(sys.argv[9])
-group_3 = '{:>5}'.format(sys.argv[10])
+value = sys.argv[8]
+group_1 = f'{value:>5}'
+value = sys.argv[9]
+group_2 = f'{value:>5}'
+value = sys.argv[10]
+group_3 = f'{value:>5}'
 
 
 file_list = os.listdir('frames')
 
-# function to get the coordinates as a vector
-## global variable 'lines' in function -> change this in future implementations
+
+# global variable 'lines' in function -> change this in future implementations
 def coord(num_line):
+    """coord. Returns the coordinates as a vector
+
+    :param num_line: The line number in .gro-file
+    """
     lines_string = str(lines[num_line])
-    vec = np.array([float(lines_string.split()[3]),float(lines_string.split()[4]), float(lines_string.split()[5])])
+    vec = np.array([float(lines_string.split()[3]),
+                    float(lines_string.split()[4]),
+                    float(lines_string.split()[5])])
     return vec
+
 
 # loop through all files in directory 'frames'
 for file_name in file_list:
@@ -100,12 +90,13 @@ for file_name in file_list:
         vec_cb3 = coord(B3)
 
         # calculate the vectors to the link atoms and round to three decimals
-        vec_la1 = np.round(0.72 * (vec_ca1 - vec_cb1) + vec_cb1, decimals = 3)
-        vec_la1 = ['{:>8.3f}'.format(num) for num in vec_la1]     # add zeroes if necessary
-        vec_la2 = np.round(0.72 * (vec_ca2 - vec_cb2) + vec_cb2, decimals = 3)
-        vec_la2 = ['{:>8.3f}'.format(num) for num in vec_la2]     # add zeroes if necessary
-        vec_la3 = np.round(0.72 * (vec_ca3 - vec_cb3) + vec_cb3, decimals = 3)
-        vec_la3 = ['{:>8.3f}'.format(num) for num in vec_la3]     # add zeroes if necessary
+        # add zeroes if necessary
+        vec_la1 = np.round(0.72 * (vec_ca1 - vec_cb1) + vec_cb1, decimals=3)
+        vec_la1 = [f'{num:>8.3f}' for num in vec_la1]
+        vec_la2 = np.round(0.72 * (vec_ca2 - vec_cb2) + vec_cb2, decimals=3)
+        vec_la2 = [f'{num:>8.3f}' for num in vec_la2]
+        vec_la3 = np.round(0.72 * (vec_ca3 - vec_cb3) + vec_cb3, decimals=3)
+        vec_la3 = [f'{num:>8.3f}' for num in vec_la3]
 
     # control mechanism: should detect broken QM-zone
 
@@ -153,11 +144,12 @@ for file_name in file_list:
             new_file.write(lines[i])
 
 
-## generate the new xtc-file
+# generate the new xtc-file
 
 # get a list of files with ending .gro and sort them
 file_pattern = os.path.join('new_frames', 'new_frame*.gro')
-file_list = sorted(glob.glob(file_pattern), key = lambda x: int(os.path.basename(x).split('frame')[1].split('.gro')[0]))
+file_list = sorted(glob.glob(file_pattern),
+                   key = lambda x: int(os.path.basename(x).split('frame')[1].split('.gro')[0]))
 print(file_list)
 
 # loop through all gro-files in current directory
