@@ -1,20 +1,5 @@
 #!/bin/bash
 
-
-# files needed:
-# .top -> changed for qm simulations
-# .ndx -> newly generated and changed for qm qimulations
-# new_frame0.gro
-# full.xtc
-# dftb_in.hsd
-# .mdp
-# single_submit.sh -> changed for rerun
-
-
-## input:
-# ./part2.sh *.mdp *.gro *.top *.ndx
-
-
 if [ "$#" -ne 4 ]; then
 	echo "Usage: $0 <.mdp-file> <.gro-file> <.top-file> <.ndx-file>"
 	exit 1
