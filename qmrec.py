@@ -100,8 +100,8 @@ def f_case_a_neq_b(hubbard1: float,hubbard2: float, x_range: np.array) -> float:
 dict_atomtypes_reverse = {1:'C', 2:'H', 3:'S'}
 
 # dictionary to define hubbard units
-# unit_conversion_bohr_to_nm = 1/ 0.0529177249   # for SI units
-unit_conversion_bohr_to_nm = 1                  # for a.u.
+unit_conversion_bohr_to_nm = 1/ 0.0529177249   # for SI units
+#  unit_conversion_bohr_to_nm = 1                  # for a.u.
 dict_hubbard = {
            "C": 0.3647*unit_conversion_bohr_to_nm,
             "H": 0.4195*unit_conversion_bohr_to_nm,

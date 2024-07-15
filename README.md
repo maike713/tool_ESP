@@ -169,3 +169,9 @@ only needs to be converted to SI units.
   ERROR file
 - rewrite the function `coord` in `laplace.py` and `laplace_mod.py` so that it does not
   use a global variable
+
+# Notes
+
+- The ESP from `qm_dftb_esp.xvg` is given in Volts
+- The ESP from `esp_output` is given in atomic units and is converted to Volts
+  in `conv_full_esp.py`
