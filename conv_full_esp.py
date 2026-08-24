@@ -9,7 +9,10 @@ INPUT2 = 'esp_output'
 
 # ESP in INPUT1 is given in Volts
 # ESP in INPUT2 is given in atomic units, conversion to Volt with CF
-full_esp = np.loadtxt(INPUT1) + (np.loadtxt(INPUT2, skiprows=1) * CF)
+#  full_esp = np.loadtxt(INPUT1) + (np.loadtxt(INPUT2, skiprows=1) * CF)
+# ESP in INPUT1 is with the wrong sign convention, so multiplied with -1 ????
+# ESP in INPUT2 in atomic units, conversion to Volt with CF ????
+full_esp = (np.loadtxt(INPUT1) * (-1)) + (np.loadtxt(INPUT2, skiprows=1))
 full_esp[:,0] = np.arange(0, len(full_esp[:,0] + 1))  # needed to preserve the time
 
 np.save('esp_full.npy', full_esp)
